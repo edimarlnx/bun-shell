@@ -1,0 +1,17 @@
+{
+  "author": {
+    "name": "Edimar Cardoso",
+    "email": "edimarlnx@gmail.com",
+    "url": "https://twitter.com/edimarlnx"
+  },
+  "name": "bun-shell",
+  "module": "bunsh",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "prettier": "^3.2.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,60 @@
+#!/usr/bin/env bun
+
+import { $ } from 'bun'
+
+const bunBuiltinsCommands = [
+    'cd',
+    'ls',
+    'rm',
+    'echo',
+    'pwd',
+    'bun',
+    'cat',
+    'touch',
+    'mkdir',
+    'which',
+    'mv',
+    'exit',
+    'true',
+    'false',
+    'yes',
+    'seq',
+    'dirname',
+    'basename',
+]
+
+const customFunctions : {[key: string]: (...args: any[]) => any} = {
+    myFunction: (...args: any[]) => {
+        console.log(`Args: ${args.join(' ')}`)
+    },
+    export: (...args: any[]) => {
+        const [envName, value] = args[0].split('=');
+        $.env({[envName]: value});
+    },
+}
+
+$.env({A: 'test'})
+
+const newLineConsole = () => console.write('$ ')
+
+newLineConsole()
+
+for await (const line of console) {
+    const commandAndArgs = line.split(' ')
+    const cmd = commandAndArgs[0]
+    const args = commandAndArgs.slice(1)
+    try {
+        if (typeof customFunctions[cmd] === 'function') {
+            customFunctions[cmd].call({}, ...args)
+        } else {
+            if (cmd === 'cd') {
+                await $.cwd(args.join(' '))
+            } else {
+                await $`${cmd} ${{raw: args.join(' ')}}`
+            }
+        }
+    } catch (err) {
+        console.error(err)
+    }
+    newLineConsole()
+}
